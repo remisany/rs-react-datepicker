@@ -50,6 +50,8 @@ stories.add("Ex2", () => {
     <h1>React Datepicker</h1>
     <h2>Customized</h2>
     <Datepicker
+      label = "Date picker customized:"
+      placeholder = "Click to open"
       date = {date}
       styleDatePicker = {customDatePicker}
       styleSelectedDay = {customSelectedDay}
