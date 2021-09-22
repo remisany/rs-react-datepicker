@@ -11,9 +11,17 @@ import Right from "../assets/right.svg"
 const CONTAINER = styled.div`
     position: relative;
 `
+const LABEL = styled.label`
+    margin-right: 5px;
+    ${(props) => props.customStyle}
+`
 
 const INPUT = styled.input`
     ${(props) => props.customStyle}
+
+    ::placeholder {
+        ${(props) => props.customPlaceholder}
+    }
 `
 
 const DATEPICKER = styled.div`
@@ -96,6 +104,10 @@ const DAY = styled.div`
     flex: 1 1 14%;
     display: flex;
     justify-content: center;
+    :hover {
+        background-color: #F00;
+        ${(props) => props.customHover}
+    }
     ${(props) => props.customStyle}
 `
 
@@ -112,24 +124,29 @@ const OUTSIDEDAY = styled.div`
 * @param {date} date - To set up the date
 * @param {string} doubleLeft - To change the default double left image
 * @param {string} doubleRight - To change the default double right image
+* @param {string} label - To change the label
 * @param {string} left - To change the default left image
+* @param {string} placeholder - To change the placeholder
 * @param {string} right - To change the default right image
 * @param {object} styleArrow- To customize the img style
 * @param {object} styleContainerNameDay - To customize the container style that contains the day names
 * @param {object} styleContainerNumberDay - To customize the container style that contains the day numbers
 * @param {object} styleDatePicker - To customize the datepicker container style
 * @param {object} styleHeader - To customize the header style of datepicker
+* @param {object} styleHover - To customize the hover day style
 * @param {object} styleInput - To customize the input
+* @param {object} styleLabel - To change the label style
 * @param {object} styleMonth - To customize the style of the month displayed
 * @param {object} styleNameDay - To customize the style of the day names
 * @param {object} styleNumberDay - To customize the style of the days of the current month
 * @param {object} styleOutsideDay - To customize the style of days that do not belong to the current month
+* @param {object} stylePlaceholder - To change the placeholder style
 * @param {object} styleSelectedDay - To customize the selected day style
 * @param {object} styleYear - To customize the style of the year displayed
 * @returns {component} - Date picker
 */
 
-function Datepicker ({ date, doubleLeft, doubleRight, left, right, styleArrow, styleContainerNameDay, styleContainerNumberDay, styleDatePicker, styleHeader, styleInput, styleMonth, styleNameDay, styleNumberDay, styleOutsideDay, styleSelectedDay, styleYear }) {
+function Datepicker ({ date, doubleLeft, doubleRight, label, left, placeholder, right, styleArrow, styleContainerNameDay, styleContainerNumberDay, styleDatePicker, styleHeader, styleHover, styleInput, styleLabel, styleMonth, styleNameDay, styleNumberDay, styleOutsideDay, stylePlaceholder, styleSelectedDay, styleYear }) {
     const [seletedDate, setSeletedDate] = useState(date)
     const [seletedDay, setSeletedDay] = useState(seletedDate.toDateString().substring(8,10))
     const [seletedMonth, setSeletedMonth] = useState(seletedDate.toDateString().substring(8,10))
@@ -242,7 +259,8 @@ function Datepicker ({ date, doubleLeft, doubleRight, left, right, styleArrow, s
 
     return (
         <CONTAINER>
-            <INPUT customStyle = {styleInput} id = "datepicker" onClick = {() => setActive(true)}/>
+            {label !== "" && <LABEL customStyle = {styleLabel}>{label}</LABEL>}
+            <INPUT customStyle = {styleInput} customPlaceholder = {stylePlaceholder} id = "datepicker" placeholder = {placeholder} onClick = {() => setActive(true)}/>
             {active ?
                 <DATEPICKER customStyle = {styleDatePicker} className = "in">
                     <HEADER customStyle = {styleHeader} className = "in">
@@ -274,7 +292,7 @@ function Datepicker ({ date, doubleLeft, doubleRight, left, right, styleArrow, s
                                     {monthDay}
                                 </TODAY>
                             :
-                                <DAY customStyle = {styleNumberDay} className = "in" key = {index} onClick = {(e) => selectDate(e)}>
+                                <DAY customStyle = {styleNumberDay} customHover = {styleHover}  className = "in" key = {index} onClick = {(e) => selectDate(e)}>
                                     {monthDay}
                                 </DAY>
                         ))}
@@ -296,18 +314,23 @@ Datepicker.propTypes = {
     date: PropTypes.instanceOf(Date).isRequired,
     doubleLeft: PropTypes.string,
     doubleRight: PropTypes.string,
+    label: PropTypes.string,
     left: PropTypes.string,
+    placeholder: PropTypes.string,
     right: PropTypes.string,
     styleArrow: PropTypes.object,
     styleContainerNameDay: PropTypes.object,
     styleContainerNumberDay: PropTypes.object,
     styleDatePicker: PropTypes.object,
     styleHeader: PropTypes.object,
+    styleHover: PropTypes.object,
     styleInput: PropTypes.object,
+    styleLabel: PropTypes.object,
     styleMonth: PropTypes.object,
     styleNameDay: PropTypes.object,
     styleNumberDay: PropTypes.object,
     styleOutsideDay: PropTypes.object,
+    stylePlaceholder: PropTypes.object,
     styleSelectedDay: PropTypes.object,
     styleYear: PropTypes.object,
 }
@@ -315,6 +338,8 @@ Datepicker.propTypes = {
 Datepicker.defaultProps = {
     doubleLeft: DoubleLeft,
     doubleRight: DoubleRight,
+    label: "",
+    placeholder: "",
     left: Left,
     right: Right,
     styleArrow: {},
@@ -322,11 +347,14 @@ Datepicker.defaultProps = {
     styleContainerNumberDay: {},
     styleDatePicker: {},
     styleHeader: {},
+    styleHover: {},
     styleInput: {},
+    styleLabel: {},
     styleMonth: {},
     styleNameDay: {},
     styleNumberDay: {},
     styleOutsideDay: {},
+    stylePlaceholder: {},
     styleSelectedDay: {},
     styleYear: {},
 }
