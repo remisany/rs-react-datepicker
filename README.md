@@ -84,18 +84,23 @@ const customContainerNumberDay = {
 Datepicker.defaultProps = {
     doubleLeft: DoubleLeft, // To change the default double left image
     doubleRight: DoubleRight, // To change the default double right image
+    label: "", // To change the label
     left: Left, // To change the default left image
+    placeholder: "" // To change the placeholder
     right: Right, // To change the default right image
     styleArrow: {}, // To customize the img style
     styleContainerNameDay: {}, // To customize the container style that contains the day names
     styleContainerNumberDay: {}, // To customize the container style that contains the day numbers
     styleDatePicker: {}, // To customize the datepicker container style
     styleHeader: {}, // To customize the header style of datepicker
+    styleHover: {}, // To customize the hover day style
     styleInput: {}, // To customize the input
+    styleLabel: {} // To change the label style
     styleMonth: {}, // To customize the style of the month displayed
     styleNameDay: {}, // To customize the style of the day names
     styleNumberDay: {}, // To customize the style of the days of the current month
     styleOutsideDay: {}, // To customize the style of days that do not belong to the current month
+    stylePlaceholder: {} // To change the placeholder style
     styleSelectedDay: {}, // To customize the selected day style
     styleYear: {}, // To customize the style of the year displayed
 }
@@ -108,18 +113,23 @@ Datepicker.propTypes = {
     date: PropTypes.instanceOf(Date).isRequired, // REQUIRED - To set up date
     doubleLeft: PropTypes.string,
     doubleRight: PropTypes.string,
+    label: PropTypes.string,
     left: PropTypes.string,
+    placeholder: PropTypes.string,
     right: PropTypes.string,
     styleArrow: PropTypes.object,
     styleContainerNameDay: PropTypes.object,
     styleContainerNumberDay: PropTypes.object,
     styleDatePicker: PropTypes.object,
     styleHeader: PropTypes.object,
+    styleHover: PropTypes.object,
     styleInput: PropTypes.object,
+    styleLabel: PropType.object,
     styleMonth: PropTypes.object,
     styleNameDay: PropTypes.object,
     styleNumberDay: PropTypes.object,
     styleOutsideDay: PropTypes.object,
+    stylePlaceholder: PropTypes.object,
     styleSelectedDay: PropTypes.object,
     styleYear: PropTypes.object,
 }
