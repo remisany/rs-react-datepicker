@@ -1,6 +1,7 @@
-import React, { useState, useEffect, Fragment } from "react"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 
+//Assets
 import DoubleLeft from "../assets/double-left.svg"
 import DoubleRight from "../assets/double-right.svg"
 import Left from "../assets/left.svg"
@@ -28,7 +29,7 @@ const HEADER = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
-    margin-bottom: 10px;
+    padding-bottom: 10px;
 `
 
 const IMG = styled.img`
@@ -64,6 +65,15 @@ const DAYS = styled.div`
     flex-wrap: wrap;
 `
 
+const TODAY = styled.div`
+    cursor: pointer;
+    flex: 1 1 14%;
+    display: flex;
+    justify-content: center;
+    background-color: #F00;
+    color: #FFF;
+`
+
 const DAY = styled.div`
     cursor: pointer;
     flex: 1 1 14%;
@@ -71,14 +81,26 @@ const DAY = styled.div`
     justify-content: center;
 `
 
-function Datepicker () {
+const OUTSIDEDAY = styled.div`
+    color: rgba(0,0,0,.5);
+    flex: 1 1 14%;
+    display: flex;
+    justify-content: center;
+`
+
+function Datepicker ({ date }) {
+    const [seletedDate, setSeletedDate] = useState(date)
+    const [seletedDay, setSeletedDay] = useState(seletedDate.toDateString().substring(8,10))
+    const [seletedMonth, setSeletedMonth] = useState(seletedDate.toDateString().substring(8,10))
+    const [seletedYear, setSeletedYear] = useState(seletedDate.toDateString().substring(11,15))
     const [active, setActive] = useState(false)
-    const [date, setDate] = useState(new Date())
     const [year, setYear] = useState(date.getFullYear())
     const [month, setMonth] = useState(date.getMonth())
     const [nbDays, setnbDays] = useState(40 - new Date(year, month, 40).getDate())
     const [firstDay, setfirstDay] = useState(new Date(year, month, 1).toDateString().substring(0,3))
+    const [previousMonthDays, setPreviousMonthDays] = useState([])
     const [monthDays, setMonthDays] = useState([])
+    const [nextMonthDays, setNextMonthDays] = useState([])
 
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -87,21 +109,33 @@ function Datepicker () {
         monthDetails()
     },[])
 
+    useEffect(() => {
+        setSeletedDay(seletedDate.toDateString().substring(8,10))
+        setSeletedMonth(seletedDate.toDateString().substring(4,7))
+        setSeletedYear(seletedDate.toDateString().substring(11,15))
+    },[seletedDate])
+
     const monthDetails = () => {
-        const currentMonthDays = []
-        const indexBegin = days.indexOf(firstDay)
+        const previousMonth = []
         const endPreviousMonth = 40 - new Date(year, month - 1, 40).getDate()
+        const indexBegin = days.indexOf(firstDay)
         for (let i = indexBegin-1; i >= 0; i--) {
-            currentMonthDays.push(endPreviousMonth - i)
+            previousMonth.push(endPreviousMonth - i)
         }
+        setPreviousMonthDays(previousMonth)
+
+        const currentMonth = []
         for (let i = 1; i <= nbDays; i++) {
-            currentMonthDays.push(i)
+            currentMonth.push(i)
         }
-        const endArray = 42 - (currentMonthDays.length)
+        setMonthDays(currentMonth)
+
+        const nextMonth = []
+        const endArray = 42 - currentMonth.length - previousMonth.length
         for (let i = 1; i <= endArray; i++) {
-            currentMonthDays.push(i)
+            nextMonth.push(i)
         }
-        setMonthDays(currentMonthDays)
+        setNextMonthDays(nextMonth)
     }
 
     const changeMonth = (nb) => {
@@ -129,55 +163,84 @@ function Datepicker () {
         monthDetails()
     },[firstDay])
 
+    const selectDate = (e) => {
+        let day = e.target.innerHTML
+        setSeletedDate(new Date(year, month, day))
+        day = day.length === 1 ? "0" + day : day
+        const displayMonth = ((month + 1).toString().length) === 1 ? "0" + (month + 1) : (month + 1)
+        document.getElementById("datepicker").value = displayMonth + "/" + day + "/" + year
+        setActive(false)
+        window.removeEventListener("keydown", escape)
+        window.removeEventListener("click", close)
+        document.body.click()
+    }
+
     useEffect((e) => {
         const escape = (e) => {
-            console.log(e)
             if (e.key === "Escape") {
                 setActive(false)
                 window.removeEventListener("keydown", escape)
+                window.removeEventListener("click", close)
+                document.getElementById("datepicker").blur()
+            }
+        }
+
+        const close = (e) => {
+            if (!e.target.classList.contains("in")) {
+                setActive(false)
+                window.removeEventListener("keydown", escape)
+                window.removeEventListener("click", close)
             }
         }
 
         if (active) {
             window.addEventListener("keydown", escape)
+            window.addEventListener("click", close)
         }
-    })
-
-    const selectDate = (e) => {
-        let day = e.target.innerHTML
-        day = day.length === 1 ? "0" + day : day
-        const displayMonth = ((month + 1).toString().length) === 1 ? "0" + (month + 1) : (month + 1)
-        document.getElementById("datepicker").value = displayMonth + "/" + day + "/" + year
-        setActive(false)
-    }
+    },[active])
 
     return (
         <CONTAINER>
-            <input id = "datepicker" onFocus = {() => setActive(true)}/>
+            <input id = "datepicker" onClick = {() => setActive(true)}/>
             {active ?
-                <DATEPICKER>
-                    <HEADER>
-                        <IMG onClick = {() => changeYear(-1)} src = {DoubleLeft}/>
-                        <IMG onClick = {() => changeMonth(-1)}  src = {Left}/>
-                        <div>
-                            <YEAR>{year}</YEAR>
-                            <MONTH>{months[month]}</MONTH>
+                <DATEPICKER className = "in">
+                    <HEADER className = "in">
+                        <IMG className = "in" onClick = {() => changeYear(-1)} src = {DoubleLeft}/>
+                        <IMG className = "in" onClick = {() => changeMonth(-1)}  src = {Left}/>
+                        <div className = "in">
+                            <YEAR className = "in">{year}</YEAR>
+                            <MONTH className = "in">{months[month]}</MONTH>
                         </div>
-                        <IMG onClick = {() => changeMonth(1)} src = {Right}/>
-                        <IMG onClick = {() => changeYear(1)} src = {DoubleRight}/>
+                        <IMG className = "in" onClick = {() => changeMonth(1)} src = {Right}/>
+                        <IMG className = "in" onClick = {() => changeYear(1)} src = {DoubleRight}/>
                     </HEADER>
-                    <NAMEDAYS>
+                    <NAMEDAYS className = "in">
                         {days.map((day, index) => (
-                            <NAMEDAY key = {index}>
+                            <NAMEDAY className = "in" key = {index}>
                                 {day}
                             </NAMEDAY>
                         ))}
                     </NAMEDAYS>
-                    <DAYS>
+                    <DAYS className = "in">
+                        {previousMonthDays.map((previousMonthDay, index) => (
+                            <OUTSIDEDAY className = "in" key = {index}>
+                                {previousMonthDay}
+                            </OUTSIDEDAY>
+                        ))}
                         {monthDays.map((monthDay, index) => (
-                            <DAY key = {index} onClick = {(e) => selectDate(e)}>
-                                {monthDay}
-                            </DAY>
+                            (monthDay == seletedDay && months[month].substring(0,3) === seletedMonth && year == seletedYear) ?
+                                <TODAY className = "in" key = {index} onClick = {(e) => selectDate(e)}>
+                                    {monthDay}
+                                </TODAY>
+                            :
+                                <DAY className = "in" key = {index} onClick = {(e) => selectDate(e)}>
+                                    {monthDay}
+                                </DAY>
+                        ))}
+                        {nextMonthDays.map((nextMonthDay, index) => (
+                            <OUTSIDEDAY className = "in" key = {index}>
+                                {nextMonthDay}
+                            </OUTSIDEDAY>
                         ))}
                     </DAYS>
                 </DATEPICKER>
