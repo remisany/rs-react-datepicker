@@ -174,6 +174,7 @@ function Datepicker({
   const [seletedMonth, setSeletedMonth] = React.useState(seletedDate.toDateString().substring(8, 10));
   const [seletedYear, setSeletedYear] = React.useState(seletedDate.toDateString().substring(11, 15));
   const [active, setActive] = React.useState(false);
+  const [id, setId] = React.useState("");
   const [year, setYear] = React.useState(date.getFullYear());
   const [month, setMonth] = React.useState(date.getMonth());
   const [nbDays, setnbDays] = React.useState(40 - new Date(year, month, 40).getDate());
@@ -253,6 +254,7 @@ function Datepicker({
     window.removeEventListener("keydown", escape);
     window.removeEventListener("click", close);
     document.body.click();
+    setId("");
   };
 
   React.useEffect(e => {
@@ -262,6 +264,7 @@ function Datepicker({
         window.removeEventListener("keydown", escape);
         window.removeEventListener("click", close);
         document.getElementById("datepicker").blur();
+        setId("");
       }
     };
 
@@ -270,10 +273,12 @@ function Datepicker({
         setActive(false);
         window.removeEventListener("keydown", escape);
         window.removeEventListener("click", close);
+        setId("");
       }
     };
 
     if (active) {
+      setId("datepicker");
       window.addEventListener("keydown", escape);
       window.addEventListener("click", close);
     }
@@ -281,9 +286,9 @@ function Datepicker({
   return /*#__PURE__*/React__default["default"].createElement(CONTAINER, null, label !== "" && /*#__PURE__*/React__default["default"].createElement(LABEL, {
     customStyle: styleLabel
   }, label), /*#__PURE__*/React__default["default"].createElement(INPUT, {
+    id: id,
     customStyle: styleInput,
     customPlaceholder: stylePlaceholder,
-    id: "datepicker",
     placeholder: placeholder,
     onClick: () => setActive(true)
   }), active ? /*#__PURE__*/React__default["default"].createElement(DATEPICKER, {

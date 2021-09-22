@@ -152,6 +152,7 @@ function Datepicker ({ date, doubleLeft, doubleRight, label, left, placeholder, 
     const [seletedMonth, setSeletedMonth] = useState(seletedDate.toDateString().substring(8,10))
     const [seletedYear, setSeletedYear] = useState(seletedDate.toDateString().substring(11,15))
     const [active, setActive] = useState(false)
+    const [id, setId] = useState("")
     const [year, setYear] = useState(date.getFullYear())
     const [month, setMonth] = useState(date.getMonth())
     const [nbDays, setnbDays] = useState(40 - new Date(year, month, 40).getDate())
@@ -231,6 +232,7 @@ function Datepicker ({ date, doubleLeft, doubleRight, label, left, placeholder, 
         window.removeEventListener("keydown", escape)
         window.removeEventListener("click", close)
         document.body.click()
+        setId("")
     }
 
     useEffect((e) => {
@@ -240,6 +242,7 @@ function Datepicker ({ date, doubleLeft, doubleRight, label, left, placeholder, 
                 window.removeEventListener("keydown", escape)
                 window.removeEventListener("click", close)
                 document.getElementById("datepicker").blur()
+                setId("")
             }
         }
 
@@ -248,10 +251,12 @@ function Datepicker ({ date, doubleLeft, doubleRight, label, left, placeholder, 
                 setActive(false)
                 window.removeEventListener("keydown", escape)
                 window.removeEventListener("click", close)
+                setId("")
             }
         }
 
         if (active) {
+            setId("datepicker")
             window.addEventListener("keydown", escape)
             window.addEventListener("click", close)
         }
@@ -260,7 +265,7 @@ function Datepicker ({ date, doubleLeft, doubleRight, label, left, placeholder, 
     return (
         <CONTAINER>
             {label !== "" && <LABEL customStyle = {styleLabel}>{label}</LABEL>}
-            <INPUT customStyle = {styleInput} customPlaceholder = {stylePlaceholder} id = "datepicker" placeholder = {placeholder} onClick = {() => setActive(true)}/>
+            <INPUT id = {id} customStyle = {styleInput} customPlaceholder = {stylePlaceholder} placeholder = {placeholder} onClick = {() => setActive(true)}/>
             {active ?
                 <DATEPICKER customStyle = {styleDatePicker} className = "in">
                     <HEADER customStyle = {styleHeader} className = "in">
