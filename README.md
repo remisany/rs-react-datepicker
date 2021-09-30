@@ -87,7 +87,7 @@ Datepicker.defaultProps = {
     id: "default", // To change the default id of the input (id) and if of datepicker (idDatepicker)
     label: "", // To change the label
     left: Left, // To change the default left image
-    onclick:  () => {}, // To add a action when click on the input
+    onblur:  () => {}, // To add a action when click on the input
     placeholder: "" // To change the placeholder
     right: Right, // To change the default right image
     styleArrow: {}, // To customize the img style
@@ -118,7 +118,7 @@ Datepicker.propTypes = {
     id: PropTypes.string, 
     label: PropTypes.string,
     left: PropTypes.string,
-    onclick: PropTypes.func,
+    onblur: PropTypes.func,
     placeholder: PropTypes.string,
     right: PropTypes.string,
     styleArrow: PropTypes.object,

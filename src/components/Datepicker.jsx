@@ -124,7 +124,7 @@ const OUTSIDEDAY = styled.div`
 * @param {string} id - To change the default id of the input (id) and if of datepicker (idDatepicker)
 * @param {string} label - To change the label
 * @param {string} left - To change the default left image
-* @param {function} onclick - To add a action when click on the input
+* @param {function} onblur - To add a action when click on the input
 * @param {string} placeholder - To change the placeholder
 * @param {string} right - To change the default right image
 * @param {object} styleArrow- To customize the img style
@@ -145,7 +145,7 @@ const OUTSIDEDAY = styled.div`
 * @returns {component} - Date picker
 */
 
-function Datepicker ({ date, doubleLeft, doubleRight, id, label, left, onclick, placeholder, right, styleArrow, styleContainerNameDay, styleContainerNumberDay, styleDatePicker, styleHeader, styleHover, styleInput, styleLabel, styleMonth, styleNameDay, styleNumberDay, styleOutsideDay, stylePlaceholder, styleSelectedDay, styleYear }) {
+function Datepicker ({ date, doubleLeft, doubleRight, id, label, left, onblur, placeholder, right, styleArrow, styleContainerNameDay, styleContainerNumberDay, styleDatePicker, styleHeader, styleHover, styleInput, styleLabel, styleMonth, styleNameDay, styleNumberDay, styleOutsideDay, stylePlaceholder, styleSelectedDay, styleYear }) {
     const [seletedDate, setSeletedDate] = useState(date)
     const [seletedDay, setSeletedDay] = useState(seletedDate.toDateString().substring(8,10))
     const [seletedMonth, setSeletedMonth] = useState(seletedDate.toDateString().substring(8,10))
@@ -264,10 +264,9 @@ function Datepicker ({ date, doubleLeft, doubleRight, id, label, left, onclick, 
                 customStyle = {styleInput}
                 customPlaceholder = {stylePlaceholder}
                 placeholder = {placeholder}
-                onClick = {(e) => {
-                    onclick(e)
-                    setActive(true)
-                }}/>
+                onClick = {() => setActive(true)}
+                onBlur = {(e) => onblur(e)}
+            />
             {active ?
                 <DATEPICKER id = {idDatepicker} customStyle = {styleDatePicker}>
                     <HEADER customStyle = {styleHeader}>
@@ -324,7 +323,7 @@ Datepicker.propTypes = {
     id: PropTypes.string, 
     label: PropTypes.string,
     left: PropTypes.string,
-    onclick: PropTypes.func,
+    onblur: PropTypes.func,
     placeholder: PropTypes.string,
     right: PropTypes.string,
     styleArrow: PropTypes.object,
@@ -349,7 +348,7 @@ Datepicker.defaultProps = {
     doubleRight: DoubleRight,
     id: "default",
     label: "",
-    onclick: () => {},
+    onblur: () => {},
     placeholder: "",
     left: Left,
     right: Right,
