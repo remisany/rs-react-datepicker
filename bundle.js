@@ -280,6 +280,7 @@ function Datepicker({
   return /*#__PURE__*/React__default["default"].createElement(React.Fragment, null, label !== "" && /*#__PURE__*/React__default["default"].createElement(LABEL, {
     customStyle: styleLabel
   }, label), /*#__PURE__*/React__default["default"].createElement(INPUT, {
+    readOnly: true,
     id: id,
     customStyle: styleInput,
     customPlaceholder: stylePlaceholder,

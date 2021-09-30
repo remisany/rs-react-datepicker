@@ -259,6 +259,7 @@ function Datepicker ({ date, doubleLeft, doubleRight, id, label, left, onclick, 
         <Fragment>
             {label !== "" && <LABEL customStyle = {styleLabel}>{label}</LABEL>}
             <INPUT
+                readOnly
                 id = {id}
                 customStyle = {styleInput}
                 customPlaceholder = {stylePlaceholder}
