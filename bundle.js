@@ -20,9 +20,6 @@ var img$1 = "data:image/svg+xml,%3csvg aria-hidden='true' focusable='false' data
 
 var img = "data:image/svg+xml,%3csvg aria-hidden='true' focusable='false' data-prefix='fas' data-icon='angle-right' class='svg-inline--fa fa-angle-right fa-w-8' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 512'%3e%3cpath fill='currentColor' d='M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z'%3e%3c/path%3e%3c/svg%3e";
 
-const CONTAINER = styled__default["default"].div`
-    position: relative;
-`;
 const LABEL = styled__default["default"].label`
     margin-right: 5px;
     ${props => props.customStyle}
@@ -123,8 +120,10 @@ const OUTSIDEDAY = styled__default["default"].div`
 * @param {date} date - To set up the date
 * @param {string} doubleLeft - To change the default double left image
 * @param {string} doubleRight - To change the default double right image
+* @param {string} id - To change the default id of the input (id) and if of datepicker (idDatepicker)
 * @param {string} label - To change the label
 * @param {string} left - To change the default left image
+* @param {function} onclick - To add a action when click on the input
 * @param {string} placeholder - To change the placeholder
 * @param {string} right - To change the default right image
 * @param {object} styleArrow- To customize the img style
@@ -149,8 +148,10 @@ function Datepicker({
   date,
   doubleLeft,
   doubleRight,
+  id,
   label,
   left,
+  onclick,
   placeholder,
   right,
   styleArrow,
@@ -174,7 +175,6 @@ function Datepicker({
   const [seletedMonth, setSeletedMonth] = React.useState(seletedDate.toDateString().substring(8, 10));
   const [seletedYear, setSeletedYear] = React.useState(seletedDate.toDateString().substring(11, 15));
   const [active, setActive] = React.useState(false);
-  const [id, setId] = React.useState("");
   const [year, setYear] = React.useState(date.getFullYear());
   const [month, setMonth] = React.useState(date.getMonth());
   const [nbDays, setnbDays] = React.useState(40 - new Date(year, month, 40).getDate());
@@ -184,6 +184,7 @@ function Datepicker({
   const [nextMonthDays, setNextMonthDays] = React.useState([]);
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const idDatepicker = id + "Datepicker";
   React.useEffect(() => {
     monthDetails();
   }, []);
@@ -249,110 +250,89 @@ function Datepicker({
     setSeletedDate(new Date(year, month, day));
     day = day.length === 1 ? "0" + day : day;
     const displayMonth = (month + 1).toString().length === 1 ? "0" + (month + 1) : month + 1;
-    document.getElementById("datepicker").value = displayMonth + "/" + day + "/" + year;
+    document.getElementById(id).value = displayMonth + "/" + day + "/" + year;
     setActive(false);
-    window.removeEventListener("keydown", escape);
-    window.removeEventListener("click", close);
-    document.body.click();
-    setId("");
   };
 
   React.useEffect(e => {
+    const close = e => {
+      const container = Array.from(document.querySelectorAll("#" + idDatepicker + " *"));
+
+      if (container.indexOf(e.target) !== -1 || document.getElementById(idDatepicker) === e.target) ; else {
+        setActive(false);
+        window.removeEventListener("click", close);
+        window.removeEventListener("keydown", escape);
+      }
+    };
+
     const escape = e => {
       if (e.key === "Escape") {
         setActive(false);
         window.removeEventListener("keydown", escape);
         window.removeEventListener("click", close);
-        document.getElementById("datepicker").blur();
-        setId("");
+        document.getElementById(id).blur();
       }
     };
 
-    const close = e => {
-      if (!e.target.classList.contains("in")) {
-        setActive(false);
-        window.removeEventListener("keydown", escape);
-        window.removeEventListener("click", close);
-        setId("");
-      }
-    };
-
-    if (active) {
-      setId("datepicker");
-      window.addEventListener("keydown", escape);
-      window.addEventListener("click", close);
-    }
+    active && window.addEventListener("click", close);
+    active && window.addEventListener("keydown", escape);
   }, [active]);
-  return /*#__PURE__*/React__default["default"].createElement(CONTAINER, null, label !== "" && /*#__PURE__*/React__default["default"].createElement(LABEL, {
+  return /*#__PURE__*/React__default["default"].createElement(React.Fragment, null, label !== "" && /*#__PURE__*/React__default["default"].createElement(LABEL, {
     customStyle: styleLabel
   }, label), /*#__PURE__*/React__default["default"].createElement(INPUT, {
     id: id,
     customStyle: styleInput,
     customPlaceholder: stylePlaceholder,
     placeholder: placeholder,
-    onClick: () => setActive(true)
+    onClick: () => {
+      setActive(true);
+    }
   }), active ? /*#__PURE__*/React__default["default"].createElement(DATEPICKER, {
-    customStyle: styleDatePicker,
-    className: "in"
+    id: idDatepicker,
+    customStyle: styleDatePicker
   }, /*#__PURE__*/React__default["default"].createElement(HEADER, {
-    customStyle: styleHeader,
-    className: "in"
+    customStyle: styleHeader
   }, /*#__PURE__*/React__default["default"].createElement(IMG, {
     customStyle: styleArrow,
-    className: "in",
     onClick: () => changeYear(-1),
     src: doubleLeft
   }), /*#__PURE__*/React__default["default"].createElement(IMG, {
     customStyle: styleArrow,
-    className: "in",
     onClick: () => changeMonth(-1),
     src: left
-  }), /*#__PURE__*/React__default["default"].createElement("div", {
-    className: "in"
-  }, /*#__PURE__*/React__default["default"].createElement(YEAR, {
-    customStyle: styleYear,
-    className: "in"
+  }), /*#__PURE__*/React__default["default"].createElement("div", null, /*#__PURE__*/React__default["default"].createElement(YEAR, {
+    customStyle: styleYear
   }, year), /*#__PURE__*/React__default["default"].createElement(MONTH, {
-    customStyle: styleMonth,
-    className: "in"
+    customStyle: styleMonth
   }, months[month])), /*#__PURE__*/React__default["default"].createElement(IMG, {
     customStyle: styleArrow,
-    className: "in",
     onClick: () => changeMonth(1),
     src: right
   }), /*#__PURE__*/React__default["default"].createElement(IMG, {
     customStyle: styleArrow,
-    className: "in",
     onClick: () => changeYear(1),
     src: doubleRight
   })), /*#__PURE__*/React__default["default"].createElement(NAMEDAYS, {
-    customStyle: styleContainerNameDay,
-    className: "in"
+    customStyle: styleContainerNameDay
   }, days.map((day, index) => /*#__PURE__*/React__default["default"].createElement(NAMEDAY, {
     customStyle: styleNameDay,
-    className: "in",
     key: index
   }, day))), /*#__PURE__*/React__default["default"].createElement(DAYS, {
-    customStyle: styleContainerNumberDay,
-    className: "in"
+    customStyle: styleContainerNumberDay
   }, previousMonthDays.map((previousMonthDay, index) => /*#__PURE__*/React__default["default"].createElement(OUTSIDEDAY, {
     customStyle: styleOutsideDay,
-    className: "in",
     key: index
   }, previousMonthDay)), monthDays.map((monthDay, index) => monthDay == seletedDay && months[month].substring(0, 3) === seletedMonth && year == seletedYear ? /*#__PURE__*/React__default["default"].createElement(TODAY, {
     customStyle: styleSelectedDay,
-    className: "in",
     key: index,
     onClick: e => selectDate(e)
   }, monthDay) : /*#__PURE__*/React__default["default"].createElement(DAY, {
     customStyle: styleNumberDay,
     customHover: styleHover,
-    className: "in",
     key: index,
     onClick: e => selectDate(e)
   }, monthDay)), nextMonthDays.map((nextMonthDay, index) => /*#__PURE__*/React__default["default"].createElement(OUTSIDEDAY, {
     customStyle: styleOutsideDay,
-    className: "in",
     key: index
   }, nextMonthDay)))) : null);
 }
@@ -361,8 +341,10 @@ Datepicker.propTypes = {
   date: PropTypes__default["default"].instanceOf(Date).isRequired,
   doubleLeft: PropTypes__default["default"].string,
   doubleRight: PropTypes__default["default"].string,
+  id: PropTypes__default["default"].string,
   label: PropTypes__default["default"].string,
   left: PropTypes__default["default"].string,
+  onclick: PropTypes__default["default"].func,
   placeholder: PropTypes__default["default"].string,
   right: PropTypes__default["default"].string,
   styleArrow: PropTypes__default["default"].object,
@@ -384,7 +366,9 @@ Datepicker.propTypes = {
 Datepicker.defaultProps = {
   doubleLeft: img$3,
   doubleRight: img$2,
+  id: "default",
   label: "",
+  onclick: () => {},
   placeholder: "",
   left: img$1,
   right: img,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, Fragment } from "react"
 import styled from "styled-components"
 import PropTypes from "prop-types";
 
@@ -8,9 +8,6 @@ import DoubleRight from "../assets/double-right.svg"
 import Left from "../assets/left.svg"
 import Right from "../assets/right.svg"
 
-const CONTAINER = styled.div`
-    position: relative;
-`
 const LABEL = styled.label`
     margin-right: 5px;
     ${(props) => props.customStyle}
@@ -124,8 +121,10 @@ const OUTSIDEDAY = styled.div`
 * @param {date} date - To set up the date
 * @param {string} doubleLeft - To change the default double left image
 * @param {string} doubleRight - To change the default double right image
+* @param {string} id - To change the default id of the input (id) and if of datepicker (idDatepicker)
 * @param {string} label - To change the label
 * @param {string} left - To change the default left image
+* @param {function} onclick - To add a action when click on the input
 * @param {string} placeholder - To change the placeholder
 * @param {string} right - To change the default right image
 * @param {object} styleArrow- To customize the img style
@@ -146,13 +145,12 @@ const OUTSIDEDAY = styled.div`
 * @returns {component} - Date picker
 */
 
-function Datepicker ({ date, doubleLeft, doubleRight, label, left, placeholder, right, styleArrow, styleContainerNameDay, styleContainerNumberDay, styleDatePicker, styleHeader, styleHover, styleInput, styleLabel, styleMonth, styleNameDay, styleNumberDay, styleOutsideDay, stylePlaceholder, styleSelectedDay, styleYear }) {
+function Datepicker ({ date, doubleLeft, doubleRight, id, label, left, onclick, placeholder, right, styleArrow, styleContainerNameDay, styleContainerNumberDay, styleDatePicker, styleHeader, styleHover, styleInput, styleLabel, styleMonth, styleNameDay, styleNumberDay, styleOutsideDay, stylePlaceholder, styleSelectedDay, styleYear }) {
     const [seletedDate, setSeletedDate] = useState(date)
     const [seletedDay, setSeletedDay] = useState(seletedDate.toDateString().substring(8,10))
     const [seletedMonth, setSeletedMonth] = useState(seletedDate.toDateString().substring(8,10))
     const [seletedYear, setSeletedYear] = useState(seletedDate.toDateString().substring(11,15))
     const [active, setActive] = useState(false)
-    const [id, setId] = useState("")
     const [year, setYear] = useState(date.getFullYear())
     const [month, setMonth] = useState(date.getMonth())
     const [nbDays, setnbDays] = useState(40 - new Date(year, month, 40).getDate())
@@ -163,6 +161,7 @@ function Datepicker ({ date, doubleLeft, doubleRight, label, left, placeholder, 
 
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    const idDatepicker = id + "Datepicker"
 
     useEffect(() => {
         monthDetails()
@@ -227,82 +226,84 @@ function Datepicker ({ date, doubleLeft, doubleRight, label, left, placeholder, 
         setSeletedDate(new Date(year, month, day))
         day = day.length === 1 ? "0" + day : day
         const displayMonth = ((month + 1).toString().length) === 1 ? "0" + (month + 1) : (month + 1)
-        document.getElementById("datepicker").value = displayMonth + "/" + day + "/" + year
+        document.getElementById(id).value = displayMonth + "/" + day + "/" + year
         setActive(false)
-        window.removeEventListener("keydown", escape)
-        window.removeEventListener("click", close)
-        document.body.click()
-        setId("")
     }
 
     useEffect((e) => {
+        const close = (e) => {
+            const container = Array.from(document.querySelectorAll("#" + idDatepicker + " *"))
+            if (container.indexOf(e.target) !== -1 || document.getElementById(idDatepicker) === e.target) {
+            } else {
+                setActive(false)
+                window.removeEventListener("click", close)
+                window.removeEventListener("keydown", escape)
+            }
+        }
+
         const escape = (e) => {
             if (e.key === "Escape") {
                 setActive(false)
                 window.removeEventListener("keydown", escape)
                 window.removeEventListener("click", close)
-                document.getElementById("datepicker").blur()
-                setId("")
+                document.getElementById(id).blur()
             }
         }
 
-        const close = (e) => {
-            if (!e.target.classList.contains("in")) {
-                setActive(false)
-                window.removeEventListener("keydown", escape)
-                window.removeEventListener("click", close)
-                setId("")
-            }
-        }
+        active && window.addEventListener("click", close)
+        active && window.addEventListener("keydown", escape)
+    }, [active])
 
-        if (active) {
-            setId("datepicker")
-            window.addEventListener("keydown", escape)
-            window.addEventListener("click", close)
-        }
-    },[active])
 
     return (
-        <CONTAINER>
+        <Fragment>
             {label !== "" && <LABEL customStyle = {styleLabel}>{label}</LABEL>}
-            <INPUT id = {id} customStyle = {styleInput} customPlaceholder = {stylePlaceholder} placeholder = {placeholder} onClick = {() => setActive(true)}/>
+            <INPUT
+                id = {id}
+                customStyle = {styleInput}
+                customPlaceholder = {stylePlaceholder}
+                placeholder = {placeholder}
+                onClick = {() => {
+                    {onclick}
+                    setActive(true)
+                }}/>
             {active ?
-                <DATEPICKER customStyle = {styleDatePicker} className = "in">
-                    <HEADER customStyle = {styleHeader} className = "in">
-                        <IMG customStyle = {styleArrow} className = "in" onClick = {() => changeYear(-1)} src = {doubleLeft}/>
-                        <IMG customStyle = {styleArrow} className = "in" onClick = {() => changeMonth(-1)}  src = {left}/>
-                        <div className = "in">
-                            <YEAR customStyle = {styleYear} className = "in">{year}</YEAR>
-                            <MONTH customStyle = {styleMonth} className = "in">{months[month]}</MONTH>
+                <DATEPICKER id = {idDatepicker} customStyle = {styleDatePicker}>
+                    <HEADER customStyle = {styleHeader}>
+                        <IMG customStyle = {styleArrow} onClick = {() => changeYear(-1)} src = {doubleLeft}/>
+                        <IMG customStyle = {styleArrow} onClick = {() => changeMonth(-1)}  src = {left}/>
+                        <div>
+                            <YEAR customStyle = {styleYear} >{year}</YEAR>
+                            <MONTH customStyle = {styleMonth}>{months[month]}</MONTH>
                         </div>
-                        <IMG customStyle = {styleArrow} className = "in" onClick = {() => changeMonth(1)} src = {right}/>
-                        <IMG customStyle = {styleArrow} className = "in" onClick = {() => changeYear(1)} src = {doubleRight}/>
+                        <IMG customStyle = {styleArrow} onClick = {() => changeMonth(1)} src = {right}/>
+                        <IMG customStyle = {styleArrow} onClick = {() => changeYear(1)} src = {doubleRight}/>
                     </HEADER>
-                    <NAMEDAYS customStyle = {styleContainerNameDay} className = "in">
+                    <NAMEDAYS customStyle = {styleContainerNameDay}>
                         {days.map((day, index) => (
-                            <NAMEDAY customStyle = {styleNameDay} className = "in" key = {index}>
+                            <NAMEDAY customStyle = {styleNameDay} key = {index}>
                                 {day}
                             </NAMEDAY>
                         ))}
                     </NAMEDAYS>
-                    <DAYS customStyle = {styleContainerNumberDay} className = "in">
+                    <DAYS customStyle = {styleContainerNumberDay}>
                         {previousMonthDays.map((previousMonthDay, index) => (
-                            <OUTSIDEDAY customStyle = {styleOutsideDay} className = "in" key = {index}>
+                            <OUTSIDEDAY customStyle = {styleOutsideDay} key = {index}>
                                 {previousMonthDay}
                             </OUTSIDEDAY>
                         ))}
                         {monthDays.map((monthDay, index) => (
                             (monthDay == seletedDay && months[month].substring(0,3) === seletedMonth && year == seletedYear) ?
-                                <TODAY customStyle = {styleSelectedDay} className = "in" key = {index} onClick = {(e) => selectDate(e)}>
+                                <TODAY customStyle = {styleSelectedDay} key = {index} onClick = {(e) => selectDate(e)}>
                                     {monthDay}
                                 </TODAY>
                             :
-                                <DAY customStyle = {styleNumberDay} customHover = {styleHover}  className = "in" key = {index} onClick = {(e) => selectDate(e)}>
+                                <DAY customStyle = {styleNumberDay} customHover = {styleHover} key = {index} onClick = {(e) => selectDate(e)}>
                                     {monthDay}
                                 </DAY>
                         ))}
                         {nextMonthDays.map((nextMonthDay, index) => (
-                            <OUTSIDEDAY customStyle = {styleOutsideDay} className = "in" key = {index}>
+                            <OUTSIDEDAY customStyle = {styleOutsideDay} key = {index}>
                                 {nextMonthDay}
                             </OUTSIDEDAY>
                         ))}
@@ -311,7 +312,7 @@ function Datepicker ({ date, doubleLeft, doubleRight, label, left, placeholder, 
             :
                 null
             }
-        </CONTAINER>
+        </Fragment>
     )
 }
 
@@ -319,8 +320,10 @@ Datepicker.propTypes = {
     date: PropTypes.instanceOf(Date).isRequired,
     doubleLeft: PropTypes.string,
     doubleRight: PropTypes.string,
+    id: PropTypes.string, 
     label: PropTypes.string,
     left: PropTypes.string,
+    onclick: PropTypes.func,
     placeholder: PropTypes.string,
     right: PropTypes.string,
     styleArrow: PropTypes.object,
@@ -343,7 +346,9 @@ Datepicker.propTypes = {
 Datepicker.defaultProps = {
     doubleLeft: DoubleLeft,
     doubleRight: DoubleRight,
+    id: "default",
     label: "",
+    onclick: () => {},
     placeholder: "",
     left: Left,
     right: Right,

@@ -13,6 +13,7 @@ stories.add("Ex1", () => {
           <h2>By default</h2>
           <Datepicker
             date = {date}
+            id = "default"
           />
         </div>
     )
