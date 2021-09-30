@@ -285,7 +285,8 @@ function Datepicker({
     customStyle: styleInput,
     customPlaceholder: stylePlaceholder,
     placeholder: placeholder,
-    onClick: () => {
+    onClick: e => {
+      onclick(e);
       setActive(true);
     }
   }), active ? /*#__PURE__*/React__default["default"].createElement(DATEPICKER, {

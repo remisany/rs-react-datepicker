@@ -264,8 +264,8 @@ function Datepicker ({ date, doubleLeft, doubleRight, id, label, left, onclick, 
                 customStyle = {styleInput}
                 customPlaceholder = {stylePlaceholder}
                 placeholder = {placeholder}
-                onClick = {() => {
-                    {onclick}
+                onClick = {(e) => {
+                    onclick(e)
                     setActive(true)
                 }}/>
             {active ?
