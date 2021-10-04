@@ -270,14 +270,14 @@ function Datepicker ({ date, doubleLeft, doubleRight, id, label, left, onChange,
             {active ?
                 <DATEPICKER id = {idDatepicker} customStyle = {styleDatePicker}>
                     <HEADER customStyle = {styleHeader}>
-                        <IMG customStyle = {styleArrow} onClick = {() => changeYear(-1)} src = {doubleLeft}/>
-                        <IMG customStyle = {styleArrow} onClick = {() => changeMonth(-1)}  src = {left}/>
+                        <IMG alt = "previous year" customStyle = {styleArrow} onClick = {() => changeYear(-1)} src = {doubleLeft}/>
+                        <IMG alt = "previous month" customStyle = {styleArrow} onClick = {() => changeMonth(-1)}  src = {left}/>
                         <div>
                             <YEAR customStyle = {styleYear} >{year}</YEAR>
                             <MONTH customStyle = {styleMonth}>{months[month]}</MONTH>
                         </div>
-                        <IMG customStyle = {styleArrow} onClick = {() => changeMonth(1)} src = {right}/>
-                        <IMG customStyle = {styleArrow} onClick = {() => changeYear(1)} src = {doubleRight}/>
+                        <IMG alt = "next month" customStyle = {styleArrow} onClick = {() => changeMonth(1)} src = {right}/>
+                        <IMG alt = "next year" customStyle = {styleArrow} onClick = {() => changeYear(1)} src = {doubleRight}/>
                     </HEADER>
                     <NAMEDAYS customStyle = {styleContainerNameDay}>
                         {days.map((day, index) => (
