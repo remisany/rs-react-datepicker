@@ -124,7 +124,7 @@ const OUTSIDEDAY = styled.div`
 * @param {string} id - To change the default id of the input (id) and if of datepicker (idDatepicker)
 * @param {string} label - To change the label
 * @param {string} left - To change the default left image
-* @param {function} onblur - To add a action when click on the input
+* @param {function} onChange - To add a action when input value change
 * @param {string} placeholder - To change the placeholder
 * @param {string} right - To change the default right image
 * @param {object} styleArrow- To customize the img style
@@ -145,7 +145,7 @@ const OUTSIDEDAY = styled.div`
 * @returns {component} - Date picker
 */
 
-function Datepicker ({ date, doubleLeft, doubleRight, id, label, left, onblur, placeholder, right, styleArrow, styleContainerNameDay, styleContainerNumberDay, styleDatePicker, styleHeader, styleHover, styleInput, styleLabel, styleMonth, styleNameDay, styleNumberDay, styleOutsideDay, stylePlaceholder, styleSelectedDay, styleYear }) {
+function Datepicker ({ date, doubleLeft, doubleRight, id, label, left, onChange, placeholder, right, styleArrow, styleContainerNameDay, styleContainerNumberDay, styleDatePicker, styleHeader, styleHover, styleInput, styleLabel, styleMonth, styleNameDay, styleNumberDay, styleOutsideDay, stylePlaceholder, styleSelectedDay, styleYear }) {
     const [seletedDate, setSeletedDate] = useState(date)
     const [seletedDay, setSeletedDay] = useState(seletedDate.toDateString().substring(8,10))
     const [seletedMonth, setSeletedMonth] = useState(seletedDate.toDateString().substring(8,10))
@@ -227,6 +227,7 @@ function Datepicker ({ date, doubleLeft, doubleRight, id, label, left, onblur, p
         day = day.length === 1 ? "0" + day : day
         const displayMonth = ((month + 1).toString().length) === 1 ? "0" + (month + 1) : (month + 1)
         document.getElementById(id).value = displayMonth + "/" + day + "/" + year
+        {onChange()}
         setActive(false)
     }
 
@@ -265,7 +266,6 @@ function Datepicker ({ date, doubleLeft, doubleRight, id, label, left, onblur, p
                 customPlaceholder = {stylePlaceholder}
                 placeholder = {placeholder}
                 onClick = {() => setActive(true)}
-                onBlur = {(e) => onblur(e)}
             />
             {active ?
                 <DATEPICKER id = {idDatepicker} customStyle = {styleDatePicker}>
@@ -348,7 +348,7 @@ Datepicker.defaultProps = {
     doubleRight: DoubleRight,
     id: "default",
     label: "",
-    onblur: () => {},
+    onChange: () => {},
     placeholder: "",
     left: Left,
     right: Right,

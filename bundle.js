@@ -123,7 +123,7 @@ const OUTSIDEDAY = styled__default["default"].div`
 * @param {string} id - To change the default id of the input (id) and if of datepicker (idDatepicker)
 * @param {string} label - To change the label
 * @param {string} left - To change the default left image
-* @param {function} onblur - To add a action when click on the input
+* @param {function} onChange - To add a action when input value change
 * @param {string} placeholder - To change the placeholder
 * @param {string} right - To change the default right image
 * @param {object} styleArrow- To customize the img style
@@ -151,7 +151,7 @@ function Datepicker({
   id,
   label,
   left,
-  onblur,
+  onChange,
   placeholder,
   right,
   styleArrow,
@@ -251,6 +251,9 @@ function Datepicker({
     day = day.length === 1 ? "0" + day : day;
     const displayMonth = (month + 1).toString().length === 1 ? "0" + (month + 1) : month + 1;
     document.getElementById(id).value = displayMonth + "/" + day + "/" + year;
+    {
+      onChange();
+    }
     setActive(false);
   };
 
@@ -285,8 +288,7 @@ function Datepicker({
     customStyle: styleInput,
     customPlaceholder: stylePlaceholder,
     placeholder: placeholder,
-    onClick: () => setActive(true),
-    onBlur: e => onblur(e)
+    onClick: () => setActive(true)
   }), active ? /*#__PURE__*/React__default["default"].createElement(DATEPICKER, {
     id: idDatepicker,
     customStyle: styleDatePicker
@@ -368,7 +370,7 @@ Datepicker.defaultProps = {
   doubleRight: img$2,
   id: "default",
   label: "",
-  onblur: () => {},
+  onChange: () => {},
   placeholder: "",
   left: img$1,
   right: img,
