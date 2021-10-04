@@ -1,6 +1,5 @@
 import babel from "@rollup/plugin-babel"
 import image from '@rollup/plugin-image';
-import noderesolve from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 import commonjs from '@rollup/plugin-commonjs';
 
@@ -12,7 +11,6 @@ export default {
     },
     plugins: [
       commonjs(),
-      noderesolve(),
       terser(),
       babel({
         exclude: "node_module/**",
