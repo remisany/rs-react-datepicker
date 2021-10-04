@@ -1,6 +1,6 @@
 {
   "name": "rs-react-datepicker",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "A simple react date picker",
   "main": "bundle.js",
   "scripts": {
