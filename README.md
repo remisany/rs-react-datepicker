@@ -4,6 +4,8 @@
 
 A simple react date picker
 
+[Npm library link](https://www.npmjs.com/package/rs-react-datepicker)
+
 1. [Installation](#Installation)
 2. [Examples of use](#Example)
 3. [Default option](#Default)
